@@ -6,6 +6,7 @@ public interface CredentialDetail {
 	public String getPassword();
 	public String getServer();
 	public int getPort();
+	public int getMaxRows();
 
 }
    

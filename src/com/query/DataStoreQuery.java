@@ -1,6 +1,7 @@
 package com.query;
 
 import com.filmservice.credential.CredentialDetail;
+import com.filmservice.credential.RemoteApiSetup;
 import com.filmservice.credential.TestCredentialImpl;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -22,14 +23,8 @@ public class DataStoreQuery {
 
 		try {
 
-			CredentialDetail c = new TestCredentialImpl();
-
-			RemoteApiOptions options = new RemoteApiOptions().server(
-					c.getServer(), c.getPort()).credentials(c.getUserName(),
-					c.getPassword());
-			RemoteApiInstaller installer = new RemoteApiInstaller();
-			installer.install(options);
-
+			new RemoteApiSetup();
+			
 			DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 			Filter filter = new FilterPredicate("year",FilterOperator.EQUAL, "2004");
 			Query q = new Query(KIND).setFilter(filter);

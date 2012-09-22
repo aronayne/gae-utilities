@@ -3,25 +3,16 @@ package com.main.generate.gendetails;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.exception.CustomException;
-import com.filmservice.credential.CredentialDetail;
-import com.filmservice.credential.TestCredentialImpl;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.filmservice.credential.RemoteApiSetup;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.tools.remoteapi.RemoteApiInstaller;
-import com.google.appengine.tools.remoteapi.RemoteApiOptions;
 import com.strategy.Context;
 import com.strategy.CreateCsvFile;
-import com.strategy.CreateFiles;
-import com.strategy.impl.CreateMovieActorMapStrategyImpl;
 import com.strategy.impl.CreateMovieRatingMapStrategyImpl;
 import com.strategy.impl.CreateMovieYearMapStrategyImpl;
 import com.upload.UploadEntity;
@@ -29,32 +20,17 @@ import com.upload.UploadEntity;
 
 public class Driver {
 
-	private static RemoteApiInstaller installer;
 	/**
 	 * Using a file to store the values in case generation process takes a significant amount of time, using seperate file
 	 * allows process to be broken into separate tasks
 	 */
 	private static final String MOVIE_DETAILS_CSV = "d:/tmp/MovieCSV.csv";
-	private static final int NUMBER_OF_RECORDS_TO_UPLOAD = 500;
-	
-	static {
-		CredentialDetail c = new TestCredentialImpl();
 
-		RemoteApiOptions options = new RemoteApiOptions().server(c.getServer(), c.getPort()).credentials(c.getUserName(),c.getPassword());
-		installer = new RemoteApiInstaller();
-		try {
-			installer.install(options);
-		} catch (IOException e) {
-			System.out.println("Check that GAE server web application is running");
-			e.printStackTrace();
-				System.exit(0);
-				
 
-		}
-	}
 	
 	public static void main(String args[]) {
 
+		RemoteApiSetup remote = new RemoteApiSetup();
 		Context context;
 
 		context = new Context(new CreateMovieYearMapStrategyImpl("d:\\filmfiles\\movies.list"));
@@ -74,10 +50,10 @@ public class Driver {
 		
 		createCsvFile(filmNames , filmRatingMap , filmYearMap);
 		
-		List<Entity> entityList = getEntityListFromCsv(NUMBER_OF_RECORDS_TO_UPLOAD);	
+		List<Entity> entityList = getEntityListFromCsv(remote.getMaxRows());	
 		UploadEntity.upload(entityList);
 		
-		installer.uninstall();
+		System.exit(0);
 	}
 	
 	private static void createCsvFile(Set<String> filmNames,

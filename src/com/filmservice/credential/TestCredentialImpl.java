@@ -22,5 +22,10 @@ public class TestCredentialImpl implements CredentialDetail{
 		return 8888;
 	}
 
+	@Override
+	public int getMaxRows() {
+		return 500;
+	}
+
 
 }

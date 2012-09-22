@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.filmservice.credential.CredentialDetail;
+import com.filmservice.credential.RemoteApiSetup;
 import com.filmservice.credential.TestCredentialImpl;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -25,17 +26,7 @@ public class DataStoreDetailsQuery {
 	private String movieYear;
 	
 	static {
-		CredentialDetail c = new TestCredentialImpl();
-
-		RemoteApiOptions options = new RemoteApiOptions().server(
-				c.getServer(), c.getPort()).credentials(c.getUserName(),
-				c.getPassword());
-		RemoteApiInstaller installer = new RemoteApiInstaller();
-		try {
-			installer.install(options);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		new RemoteApiSetup();
 	}
 	
 	public List<String> getNameDetails(){
